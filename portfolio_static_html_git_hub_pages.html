@@ -1,0 +1,269 @@
+<!--
+Portfolio — single-file static site (index.html)
+Place this file at the root of your GitHub Pages repository (index.html).
+Put your video assets under `assets/videos/` and images under `assets/images/`.
+Recommended video filenames used in this template:
+  - assets/videos/bg-hero.webm
+  - assets/videos/bg-hero.mp4
+  - assets/videos/project1.webm  (examples for portfolio cards)
+  - assets/videos/project1.mp4
+
+Notes:
+  - Browsers only autoplay video when muted. This template sets `muted` so the hero will autoplay.
+  - For mobile and low-bandwidth, the script will replace the hero video with a poster image if the screen is small or if user prefers reduced motion.
+  - To connect a custom domain: add a file named `CNAME` (uppercase) with your domain (e.g. example.com) to the repo root, OR add the custom domain inside your repo's GitHub Pages settings. Also add the appropriate DNS records with your DNS provider (CNAME -> <your-github-username>.github.io for subdomains; see GitHub Pages docs for apex domains).
+-->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Portfolio — Your name. Video background, projects, contact." />
+  <title>Your Name — Portfolio</title>
+  <link rel="icon" href="assets/images/favicon.png" />
+
+  <style>
+    /* Reset + base */
+    :root{--accent:#ff6b6b;--dark:rgba(0,0,0,0.6);--glass:rgba(255,255,255,0.06);}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;line-height:1.4;color:#fff;background:#071021;}
+    a{color:inherit;text-decoration:none}
+
+    /* BACKGROUND VIDEO (full-page) */
+    .bg-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;pointer-events:none}
+    .bg-overlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(2,6,23,0.45),rgba(2,6,23,0.6));z-index:-1}
+
+    /* Header */
+    header{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:14px 28px;z-index:50}
+    .logo{font-weight:700;letter-spacing:0.4px}
+    nav{display:flex;gap:18px}
+    .nav-link{padding:8px 12px;border-radius:8px;transition:background .18s;color:rgba(255,255,255,0.9)}
+    .nav-link:hover{background:rgba(255,255,255,0.04)}
+
+    /* Hero */
+    .hero{min-height:100vh;display:grid;place-items:center;text-align:center;padding:0 20px}
+    .hero-inner{max-width:1000px}
+    h1{font-size:clamp(28px,6vw,56px);margin:0 0 10px}
+    p.lead{font-size:clamp(15px,2.2vw,20px);color:rgba(255,255,255,0.9);margin:0 0 22px}
+    .cta{display:inline-flex;gap:12px}
+    .btn{background:var(--accent);padding:12px 18px;border-radius:10px;font-weight:600;color:#081018;box-shadow:0 6px 18px rgba(0,0,0,0.35)}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.08);color:#fff}
+
+    /* Mute button */
+    .mute-btn{position:fixed;right:18px;bottom:18px;padding:10px 14px;border-radius:999px;background:rgba(0,0,0,0.4);backdrop-filter:blur(6px);z-index:60;border:1px solid rgba(255,255,255,0.06);cursor:pointer}
+
+    /* Sections */
+    section{padding:80px 20px}
+    .container{max-width:1200px;margin:0 auto}
+
+    /* Works grid */
+    .works-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));border-radius:14px;overflow:hidden;position:relative;min-height:160px}
+    .card video{width:100%;height:100%;object-fit:cover;display:block}
+    .card .card-info{position:absolute;left:12px;bottom:12px;padding:8px 10px;border-radius:8px;background:rgba(0,0,0,0.36);backdrop-filter:blur(4px)}
+
+    /* About/Contact */
+    .split{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center}
+    @media (max-width:920px){.split{grid-template-columns:1fr}}
+
+    /* Footer */
+    footer{padding:30px 20px;text-align:center;color:rgba(255,255,255,0.6)}
+
+    /* Accessibility: prefer reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .bg-video{display:none}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">Skip to content</a>
+
+  <!-- Hero background video -->
+  <video id="bgVideo" class="bg-video" autoplay muted loop playsinline preload="auto" poster="assets/images/hero-poster.jpg">
+    <source src="assets/videos/bg-hero.webm" type="video/webm" />
+    <source src="assets/videos/bg-hero.mp4" type="video/mp4" />
+    <!-- fallback: a still background image will be used -->
+  </video>
+  <div class="bg-overlay" aria-hidden="true"></div>
+
+  <header>
+    <div class="logo">Your Name</div>
+    <nav aria-label="Primary">
+      <a class="nav-link" href="#work">Work</a>
+      <a class="nav-link" href="#about">About</a>
+      <a class="nav-link" href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" role="banner">
+      <div class="hero-inner">
+        <h1>Hi — I'm <strong>Your Name</strong></h1>
+        <p class="lead">I make short-form visuals, website content, and cinematic edits. Below are select projects — click to open galleries or video pages.</p>
+        <div class="cta">
+          <a class="btn" href="#work">See work</a>
+          <a class="btn secondary" href="#contact">Hire me</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="work" class="container" aria-labelledby="work-heading">
+      <h2 id="work-heading">Selected Work</h2>
+      <p style="color:rgba(255,255,255,0.75)">Hover a card to pause/play in supported browsers. Videos are muted so they can autoplay.</p>
+
+      <div class="works-grid" id="worksGrid">
+        <!-- Example card: replace project1.* with your files -->
+        <a class="card" href="#" aria-label="Open project 1">
+          <video class="project-video" muted playsinline loop preload="metadata" poster="assets/images/project1-poster.jpg" data-src-webm="assets/videos/project1.webm" data-src-mp4="assets/videos/project1.mp4"></video>
+          <div class="card-info">Project 1 — Short film promo</div>
+        </a>
+
+        <a class="card" href="#" aria-label="Open project 2">
+          <video class="project-video" muted playsinline loop preload="metadata" poster="assets/images/project2-poster.jpg" data-src-webm="assets/videos/project2.webm" data-src-mp4="assets/videos/project2.mp4"></video>
+          <div class="card-info">Project 2 — Campus interview series</div>
+        </a>
+
+        <a class="card" href="#" aria-label="Open project 3">
+          <video class="project-video" muted playsinline loop preload="metadata" poster="assets/images/project3-poster.jpg" data-src-webm="assets/videos/project3.webm" data-src-mp4="assets/videos/project3.mp4"></video>
+          <div class="card-info">Project 3 — Short documentary clip</div>
+        </a>
+
+      </div>
+    </section>
+
+    <section id="about" class="container" aria-labelledby="about-heading">
+      <h2 id="about-heading">About</h2>
+      <div class="split">
+        <div>
+          <p>I'm a media editor and videographer. I produce work for student organizations, small businesses, and non-profits. I prefer short, cinematic, and story‑driven edits optimized for web delivery.</p>
+          <p>Technologies: Premiere, DaVinci Resolve, After Effects, Figma, basic HTML/CSS, Git. Want a custom project? I'd love to hear about it.</p>
+        </div>
+        <div style="text-align:center">
+          <img src="assets/images/me.jpg" alt="Portrait" style="width:100%;max-width:320px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.6)"/>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="container" aria-labelledby="contact-heading">
+      <h2 id="contact-heading">Contact</h2>
+      <p>If you'd like to work together, send an email to <a href="mailto:you@example.com">you@example.com</a> or use the links below.</p>
+      <p style="display:flex;gap:8px;flex-wrap:wrap">
+        <a class="btn" href="mailto:you@example.com">Email</a>
+        <a class="btn secondary" href="#">Download CV</a>
+      </p>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <small>© <span id="year"></span> Your Name — Built with HTML &amp; JS • Hosted on GitHub Pages</small>
+    </div>
+  </footer>
+
+  <button id="muteBtn" class="mute-btn" aria-pressed="true" title="Toggle video sound">Muted</button>
+
+  <script>
+    // Basic site behaviors: lazy-load hero & project videos, allow mute toggle, and auto-play project videos when visible
+    (function(){
+      const bgVideo = document.getElementById('bgVideo');
+      const muteBtn = document.getElementById('muteBtn');
+      const projectVideos = Array.from(document.querySelectorAll('.project-video'));
+      const yearSpan = document.getElementById('year');
+      yearSpan.textContent = new Date().getFullYear();
+
+      // Respect reduced motion: remove videos if user prefers reduced motion
+      const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(prefersReduced){
+        // hide the hero video - fallback to poster
+        bgVideo.style.display = 'none';
+      }
+
+      // Mute toggle (user gesture allowed to unmute)
+      function updateMuteUI(){
+        muteBtn.textContent = bgVideo.muted ? 'Muted' : 'Unmuted';
+        muteBtn.setAttribute('aria-pressed', String(!bgVideo.muted));
+      }
+      updateMuteUI();
+      muteBtn.addEventListener('click', ()=>{
+        bgVideo.muted = !bgVideo.muted;
+        updateMuteUI();
+      });
+
+      // Responsive hero: if screen is narrow, don't load heavy hero video - rely on poster
+      function shouldUseHeroVideo(){
+        return window.innerWidth >= 720 && !prefersReduced;
+      }
+
+      // Load hero sources if suitable
+      function ensureHeroLoaded(){
+        if(!shouldUseHeroVideo()){
+          bgVideo.pause();
+          bgVideo.style.display = 'none';
+          return;
+        }
+        bgVideo.style.display = '';
+        // If browser hasn't loaded sources, calling play() will trigger autoplay if muted
+        const playPromise = bgVideo.play();
+        if(playPromise && playPromise.catch){
+          playPromise.catch((e)=>{
+            // autoplay blocked; we will still show poster
+            console.info('Autoplay prevented:', e.message);
+          });
+        }
+      }
+      ensureHeroLoaded();
+      window.addEventListener('resize', () => {
+        ensureHeroLoaded();
+      });
+
+      // Lazy-load project videos: set src when element is observed / near viewport
+      const lazyObserver = new IntersectionObserver((entries)=>{
+        entries.forEach(entry => {
+          const vid = entry.target;
+          if(entry.isIntersecting){
+            if(!vid.dataset._loaded){
+              // set sources
+              const webm = vid.getAttribute('data-src-webm');
+              const mp4 = vid.getAttribute('data-src-mp4');
+              if(webm){ const s1 = document.createElement('source'); s1.src = webm; s1.type = 'video/webm'; vid.appendChild(s1); }
+              if(mp4){ const s2 = document.createElement('source'); s2.src = mp4; s2.type = 'video/mp4'; vid.appendChild(s2); }
+              vid.dataset._loaded = '1';
+              // small play attempt (muted so it should autoplay)
+              const p = vid.play();
+              if(p && p.catch){ p.catch(()=>{}); }
+            }
+            // if enough visible, ensure playing
+            if(vid.dataset._loaded){ vid.play().catch(()=>{}); }
+          } else {
+            // pause when not visible
+            vid.pause();
+          }
+        });
+      },{rootMargin:'300px 0px',threshold:0.25});
+
+      projectVideos.forEach(v => lazyObserver.observe(v));
+
+      // Optional: allow hover to toggle playback for desktops
+      projectVideos.forEach(v => {
+        const parent = v.closest('.card');
+        if(!parent) return;
+        parent.addEventListener('mouseenter', ()=>{ v.play().catch(()=>{}); });
+        parent.addEventListener('mouseleave', ()=>{ v.pause(); });
+      });
+
+      // Simple keyboard accessibility: space toggles hero mute
+      window.addEventListener('keydown', (e)=>{
+        if(e.key === ' ' && (document.activeElement === document.body)){
+          e.preventDefault();
+          bgVideo.muted = !bgVideo.muted;
+          updateMuteUI();
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
